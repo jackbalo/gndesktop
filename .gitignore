@@ -180,5 +180,4 @@ instance
 .instance
 
 flask_session/
-flask_session
-.flask_session/
+.flask_session
