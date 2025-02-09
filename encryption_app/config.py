@@ -9,7 +9,7 @@ class Config:
     SESSION_TYPE = "filesystem"
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SAMESITE = 'None'
     PERMANENT_SESSION_LIFETIME = 1800  # 30 minutes
 
     SECRET_KEY = os.getenv("SECRET_KEY")
