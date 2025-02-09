@@ -7,15 +7,15 @@ class Config:
     # Configure session to use filesystem (instead of signed cookies)
     SESSION_PERMANENT = False
     SESSION_TYPE = "filesystem"
-    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = False
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SAMESITE = 'Lax'
     PERMANENT_SESSION_LIFETIME = 1800  # 30 minutes
 
     SECRET_KEY = os.getenv("SECRET_KEY")
     SECURITY_PASSWORD_SALT = os.getenv("SECURITY_PASSWORD_SALT")
 
-    SQLALCHEMY_DATABASE_URI = "sqlite:///project.db"
+    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # list of google scopes - https://developers.google.com/identity/protocols/oauth2/scopes
