@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-navy text-light py-4">
+                    <h2 class="h4 text-center mb-0">Create an Account</h2>
+                </div>
+                
+                <div class="card-body bg-light">
+                    <form action="{{url_for('auth.register')}}" method="post">
+                        <div class="mb-3">
+                            <div class="row justify-content-center">
+                                <div class="col-4 text-center mb-2">
+                                    <a href="{{ url_for('auth.googleLogin') }}" class="btn btn-outline-danger w-100">
+                                        <i class="fab fa-google me-1"></i> Google
+                                    </a>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <a href="#" class="btn btn-outline-dark w-100">
+                                        <i class="fab fa-github-square me-1"></i> GitHub
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <p>or sign up with email</p>
+                        </div>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="username" name="email" placeholder="Your Email" autocomplete="off" autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Your username" autocomplete="off" autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Create Password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="password" name="confirmation" placeholder="Confirm Password" required>
+                        </div>
+                        <div class="mb-3 text-center gap-3">
+                            <button type="submit" class="btn btn-dark">Continue <i class="fas fa-sign-in ms-1"></i></button>
+                            <p> Got an account? <a href="{{url_for('auth.login')}}" class="btn text-danger">Sign in<i class="fas fa-user-plus ms-1"></i></a>
+                            </p>
+                            <p> Forgot your password? <a href="{{url_for('auth.forgot_password')}}" class="btn text-primary">Reset it<i class="fas fa-user-plus ms-1"></i></a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

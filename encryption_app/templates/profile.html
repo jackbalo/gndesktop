@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-navy text-light text-center py-4">
+                    <h2 class="h2 mb-0">My Profile</h2>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <img src="{{ url_for('static', filename='profile_pics/' + user.profile_pic) }}" alt="Profile Picture" class="img-fluid rounded-circle" style="width: 150px; height: 150px;">
+                    </div>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
+                        <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
+                    </ul>
+                    <div class="d-flex justify-content-center mb-2">
+                        <a href="{{ url_for('auth.update_profile', id=user.id) }}" class="btn btn-primary me-2">Edit Profile</a>
+                    </div>
+                    <form action="{{ url_for('auth.upload_profile_pic') }}" method="post" enctype="multipart/form-data" class="mb-4">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="mb-3">
+                            <label for="profile_pic" class="form-label">Upload Profile Picture</label>
+                            <input type="file" name="profile_pic" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+{% endblock %}

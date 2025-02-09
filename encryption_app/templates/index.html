@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+
+{% block title %} Playfair Cipher{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Historical Hero Section -->
+            <div class="card shadow border-0 mb-5">
+                <div class="card-header bg-navy text-light py-4">
+                    <h1 class="display-4 text-center mb-3">
+                        <span class="ms-2 fw-bold"><i class="ms-2 fw-bold"></i> The PlayFair Cipher</span>
+                    </h1>
+                    <p class="lead text-center mb-0">Battle-Proven Encryption Since WW1</p>
+                </div>
+                <div class="card-body bg-dark-blue text-light">
+                    <div class="row align-items-center">
+                        <div class="col-md-5 text-center">
+                            <img src="{{ url_for('static', filename='comms_badge.jpg') }}" alt="WWI Communications" class="img-fluid rounded-3">
+                        </div>
+                        <div class="col-md-7 mt-4 mt-md-0">
+                            <p class="mb-4">Originally deployed by <strong>British Naval Intelligence</strong> during World War I, the Playfair Cipher secured critical battlefield communications through its unique digraph substitution system.</p>
+                            <div class="alert alert-navy">
+                                <i class="fas fa-medal me-2"></i>Key Historical Uses:
+                                <ul class="mt-2 mb-0">
+                                    <li>Trench communication encryption</li>
+                                    <li>Royal Navy ship-to-shore dispatches</li>
+                                    <li>Adopted by the Ghana Armed Forces for message encryption and decryption</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cipher Mechanics -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-8">
+                    <div class="h-100 p-4 bg-light rounded-3 shadow-sm">
+                        <h3 class="h4 mb-3 text-navy">
+                            <i class="fas fa-chess-board me-2"></i>The Cipher
+                        </h3>
+                        <p>This system generates a unique code grid using your keyword, following historical Military procedures:</p>
+                        <div class="cipher-grid-example mb-3">
+                            <div class="row g-1 text-center">
+                                {% for row in 
+                                [['E', '5', 'L', 'G', 'A', 'R', 'N', 'Y', 'I', 'C'],
+                                ['N', '9', 'D', 'G', 'W', 'Y', 'O', 'I', 'A', 'E'],
+                                ['J', '7', 'W', 'M', 'P', 'U', 'F', 'Q', 'Z', 'A'],
+                                ['Z', '12', 'Y', 'D', 'W', 'G', 'L', 'N', 'F', 'S'],
+                                ['T', '10', 'H', 'V', 'P', 'D', 'N', 'R', 'J', 'S'],
+                                ['M', '8', 'T', 'R', 'I', 'P', 'E', 'U', 'A', 'N'],
+                                ['D', '3', 'G', 'C', 'U', 'B', 'T', 'V', 'P', 'Z'],
+                                ['A', '1', 'G', 'B', 'V', 'Z', 'K', 'R', 'E', 'Y'],
+                                ['A', '2', 'Y', 'W', 'R', 'J', 'B', 'T', 'V', 'O'],
+                                ['D', '4', 'U', 'X', 'F', 'G', 'T', 'O', 'H', 'Y'],
+                                ['X', '11', 'J', 'G', 'R', 'A', 'H', 'Y', 'C', 'E'],
+                                ['E', '6', 'D', 'T', 'J', 'C', 'H', 'V', 'G', 'R']] %}
+                                <div class="col">
+                                    {% for letter in row %}
+                                    <div class="border p-1 bg-white">{{ letter }}</div>
+                                    {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="h-100 p-4 bg-light rounded-3 shadow-sm">
+                        <h3 class="h4 mb-3 text-navy">
+                            <i class="fas fa-broadcast-tower me-2"></i>The Encryption Process
+                        </h3>
+                        <p>Messages are secured using authentic documented specifications:</p>
+                        <ol class="mb-3">
+                            <li>Insert<strong> Plaintext Message</strong></li>
+                            <li>Insert Your Key </li>
+                            <li>System generates encoded text in groups of 5.</li>
+                        </ol>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Security Note: Cipher Messages are always to be destroyed after decryption per Communication regulations!!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical Timeline -->
+            <div class="card shadow border-0 mb-5">
+                <div class="card-header bg-navy text-light py-3">
+                    <h2 class="h4 mb-0 text-center">
+                        <i class="fas fa-history me-2"></i>Playfair Cipher Evolution Timeline
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-icon bg-navy text-light">1854</div>
+                            <div class="timeline-content">
+                                <h4>Initial Invention</h4>
+                                <p>Charles Wheatstone develops the cipher for British diplomatic communications</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon bg-navy text-light">1914</div>
+                            <div class="timeline-content">
+                                <h4>WWI Deployment</h4>
+                                <p>Adopted by Royal Navy for ship-to-shore communications during naval blockades</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon bg-navy text-light">1943</div>
+                            <div class="timeline-content">
+                                <h4>Mordern Usage</h4>
+                                <p>Modified version employed by various militias around the globe</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center py-5">
+                <h3 class="h2 mb-4">Ready to Encode Your Messages Before Transmission?</h3>
+                <a href="{{ url_for('main.encrypt') }}" class="btn btn-military btn-lg px-5">
+                    <i class="fas fa-ship me-2"></i>Start Encryption 
+                </a>
+                <p class="mt-3 text-muted text-navy"><strong>Do not share</strong> cipher keys via web!!</p>
+                <p class="mt-3 text-muted"><strong>Keys are already provided and in the Communication instructions.</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
