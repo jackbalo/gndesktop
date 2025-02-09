@@ -173,3 +173,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+#flask
+instance/
+instance
+.instance
+
+flask_session/
+flask_session
+.flask_session/
