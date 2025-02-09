@@ -7,7 +7,7 @@ class Config:
     # Configure session to use filesystem (instead of signed cookies)
     SESSION_PERMANENT = False
     SESSION_TYPE = "filesystem"
-    SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
     PERMANENT_SESSION_LIFETIME = 1800  # 30 minutes
