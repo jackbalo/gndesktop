@@ -15,10 +15,14 @@ def generate_token(email):
 
 def send_reset_email(email, token):
     from encryption_app import mail
-    reset_url = url_for('auth.reset_password', token=token, _external=True)
-    msg = Message('Password Reset Request', sender='gncipher@gmail.com', recipients=[email])
-    msg.body = f'Please click the link to reset your password: {reset_url}'
-    mail.send(msg)
+    try:
+        reset_url = url_for('auth.reset_password', token=token, _external=True)
+        msg = Message('Password Reset Request', sender='gncipher@gmail.com', recipients=[email])
+        msg.body = f'Please click the link to reset your password: {reset_url}'
+        mail.send(msg)
+    except Exception as e:
+        current_app.logger.error(f"Error sending reset email: {e}")
+        raise
 
 
 def confirm_token(token, expiration=3600):
@@ -50,12 +54,16 @@ def generate_state_token():
 
 def send_otp_email(receipient_email, otp_code):
     from encryption_app import mail
-    msg = Message(
-        subject="Your One-Time Password (OTP). ",
-        recipients=[receipient_email],
-        body=f"Your OTP is: {otp_code}\nThis code is valid for 60 seconds."
-    )
-    mail.send(msg)
+    try:
+        msg = Message(
+            subject="Your One-Time Password (OTP). ",
+            recipients=[receipient_email],
+            body=f"Your OTP is: {otp_code}\nThis code is valid for 60 seconds."
+        )
+        mail.send(msg)
+    except Exception as e:
+        current_app.logger.error(f"Error sending OTP email: {e}")
+        raise
     
 
 def verification_email(user):
@@ -74,3 +82,4 @@ def verification_email(user):
     except Exception as e:
         flash(f"Failed to send OTP: {str(e)}!")
         log("otp_email_failure")
+        current_app.logger.error(f"Error during OTP email verification: {e}")

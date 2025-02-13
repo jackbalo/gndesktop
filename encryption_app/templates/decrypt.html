@@ -10,11 +10,16 @@
                 <h1 class="card-title text-center mb-0">PlayFair Decryption</h1>
             </div>
             <div class="card-body">
-                <form method="post" action="{{url_for('main.decrypt')}}">
+                <form method="post" action="{{url_for('main.decrypt')}}" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-4">
                         <label for="encrypted_text" class="form-label fw-bold">ENCRYPTED MESSAGE:</label>
                         <textarea class="form-control" id="encrypted_text" name="encrypted_text" rows="4" placeholder="Enter Encrypted Message Here"></textarea>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="file" class="form-label fw-bold">UPLOAD FILE:</label>
+                        <input type="file" class="form-control" id="file" name="file">
                     </div>
                     
                     <div class="mb-4">
@@ -32,9 +37,18 @@
                 {% if decrypted_text %}
                 <div class="mt-5">
                     <h2 class="h4 text-center mb-3">DECRYPTED TEXT</h2>
+                    {% if document_path %}
+                    <div class="mt-3 text-center">
+                        <a href="{{ url_for('main.download_file', filename=document_path) }}" class="btn btn-primary">
+                            <i class="fas fa-download me-2"></i>Download Decrypted Document
+                        </a>
+                    </div>
+                    {% endif %}
                     <div class="decrypted-text">{{ decrypted_text }}</div>
                 </div>
                 {% endif %}
+                
+                
             </div>
         </div>
     </div>

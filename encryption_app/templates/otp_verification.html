@@ -19,6 +19,9 @@
                         <div class="mb-3">
                             <label for="otp" class="form-label">OTP</label>
                             <input autocomplete="off" autofocus class="form-control" name="otp" placeholder="Enter OTP" type="text">
+                            {% if errors.otp %}
+                                <div class="text-danger">{{ errors.otp }}</div>
+                            {% endif %}
                         </div>
                         <div class="mb-3 text-center">
                             <button class="btn btn-success" type="submit">Verify OTP</button>

@@ -36,18 +36,30 @@
                         <div class="mb-3">
                             <label for="username" class="form-label">Email</label>
                             <input type="text" class="form-control" id="username" name="email" placeholder="Your Email" autocomplete="off" autofocus>
+                            {% if errors.email %}
+                                <div class="text-danger">{{ errors.email }}</div>
+                            {% endif %}
                         </div>
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" name="username" placeholder="Your username" autocomplete="off" autofocus>
+                            {% if errors.username %}
+                                <div class="text-danger">{{ errors.username }}</div>
+                            {% endif %}
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Create Password" required>
+                            {% if errors.password %}
+                                <div class="text-danger">{{ errors.password }}</div>
+                            {% endif %}
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Confirm Password</label>
                             <input type="password" class="form-control" id="password" name="confirmation" placeholder="Confirm Password" required>
+                            {% if errors.confirmation %}
+                                <div class="text-danger">{{ errors.confirmation }}</div>
+                            {% endif %}
                         </div>
                         <div class="mb-3 text-center gap-3">
                             <button type="submit" class="btn btn-dark">Continue <i class="fas fa-sign-in ms-1"></i></button>

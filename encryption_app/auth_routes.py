@@ -7,28 +7,22 @@ from flask import flash, redirect, render_template, request, session, abort, Blu
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_mail import Message, Mail
 from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy.sql import func
 from datetime import datetime
 from encryption_app.models import  db, Users
 from encryption_app.helpers import apology, log, password_set, email_confirmed
 from encryption_app.email_helpers import verification_email, send_reset_email, generate_token, confirm_token, generate_potp_secret_key, verify_otp_code, generate_state_token
+from encryption_app.file_helpers import UPLOAD_PICS_FOLDER, allowed_pic_file
 
-from sqlalchemy.sql import func
 
 
 auth = Blueprint('auth', __name__)
-
-POTP_SECRET_KEY = pyotp.random_base32()
-
-UPLOAD_FOLDER = 'encryption_app/static/profile_pics'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
+    errors = {}
     if request.method == "POST":
         # Ensure CSRF token is included in the form
         if not request.form.get('csrf_token'):
@@ -40,10 +34,12 @@ def register():
         hash = generate_password_hash(password, method='pbkdf2:sha256:600000', salt_length=16)
             
         if not password or not email:
-            return apology("All fields are required!! ", 400)
+            errors = {"email": "Email is required", "password": "Password is required"}
+            return render_template("register.html", errors=errors)
         
         if password != confirmation:
-            return apology("Password Mismatch!! ", 400)
+            errors = {"confirmation": "Passwords do not match"}
+            return render_template("register.html", errors=errors)
         
         try:
             user = Users(username=username, hash=hash, email=email, password_set=True, totp_secret=generate_potp_secret_key())
@@ -52,25 +48,28 @@ def register():
 
             user = Users.query.filter_by(email=email).first()
             if not user or not check_password_hash(user.hash,password):
-                return apology("Invalid Username or Password!! ", 404)
+                errors = {"email": "Invalid Username or Password"}
+                return render_template("register.html", errors=errors)
 
             login_user(user)
             log("register")
 
         except ValueError:
-            return apology("Username already exists!! ", 403)
+            errors = {"username": "Username already exists"}
+            return render_template("register.html", errors=errors)
         
         verification_email(current_user)
         return redirect(url_for("auth.otp_verification"))
     
     else:
-        return render_template("register.html")
+        return render_template("register.html", errors=errors)
     
 
 @auth.route("/otp_verification", methods=["GET", "POST"])
 @login_required
 @password_set
 def otp_verification():
+    errors = {}
     if request.method == "POST":
         if 'resend_otp' in request.form:
             time_last_otp_sent = None
@@ -87,8 +86,8 @@ def otp_verification():
         else:
             otp = request.form.get("otp")
             if not otp:
-                flash("Please Enter OTP! ")
-                return redirect(url_for("auth.otp_verification"))
+                errors = {"otp": "Please Enter OTP"}
+                return render_template("otp_verification.html", errors=errors)
             
             if verify_otp_code(current_user.totp_secret, otp):
                 current_user.confirmed = True
@@ -98,21 +97,22 @@ def otp_verification():
                 log("otp_verified")
                 return redirect(url_for("main.home"))
             else: 
-                flash("Invalid or expired OTP!! ")
+                errors = {"otp": "Invalid or expired OTP"}
                 log("OTP_verification_failed!! ")
-                return redirect(url_for("auth.otp_verification"))
+                return render_template("otp_verification.html", errors=errors)
             
     time_last_otp_sent = None
     if current_user.last_otp_sent: 
         time_last_otp_sent = (datetime.now() - current_user.last_otp_sent).total_seconds()
         countdown = max(0, int(60 - time_last_otp_sent)) if time_last_otp_sent else 60
 
-    return render_template("otp_verification.html", user=current_user, countdown=countdown)
+    return render_template("otp_verification.html", user=current_user, countdown=countdown, errors=errors)
 
 
 @auth.route("/add_password", methods=["GET", "POST"])
 def add_password():
     """Register user"""
+    errors = {}
     if current_user.password_set:
         flash("Already added Password")
         return redirect(url_for("main.index"))
@@ -122,10 +122,12 @@ def add_password():
         confirmation = request.form.get("confirmation")
         
         if not password or not confirmation:
-            return apology("All fields are required!!", 400)
+            errors = {"password": "Password is required", "confirmation": "Confirmation is required"}
+            return render_template("add_password.html", errors=errors)
         
         if password != confirmation:
-            return apology("Password Mismatch", 400)
+            errors = {"confirmation": "Passwords do not match"}
+            return render_template("add_password.html", errors=errors)
         
         current_user.hash = generate_password_hash(password, method='pbkdf2:sha256:600000', salt_length=16)
         current_user.password_set = True
@@ -137,12 +139,13 @@ def add_password():
             verification_email(current_user)
             return redirect(url_for("auth.otp_verification"))
     
-    return render_template("add_password.html", user=current_user)
+    return render_template("add_password.html", user=current_user, errors=errors)
 
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
+    errors = {}
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         # Ensure CSRF token is included in the form
@@ -153,22 +156,23 @@ def login():
         password = request.form.get("password")
 
         if not email or not password:
-            flash("Must provide Username or Password")
-            return redirect(url_for("auth.login"))
+            errors = {"email": "Email is required", "password": "Password is required"}
+            return render_template("login.html", errors=errors)
 
         # Query database for username
         user = Users.query.filter_by(email=email).first()
 
         # Ensure username exists and password is correct
         if not user or not check_password_hash(user.hash, password):
-            return apology("invalid username and/or password", 403)
+            errors = {"email": "Invalid username and/or password"}
+            return render_template("login.html", errors=errors)
 
         login_user(user)
         log("log_in")
         return redirect(url_for("main.home"))
 
     # User reached route via GET (as by clicking a link or via redirect)
-    return render_template("login.html")
+    return render_template("login.html", errors=errors)
 
 
 @auth.route("/signin-google")
@@ -292,6 +296,7 @@ def change_password():
 
 @auth.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    errors = {}
     try:
         email = confirm_token(token)
     except:
@@ -304,6 +309,9 @@ def reset_password(token):
             abort(400, description="CSRF token missing")
         password = request.form.get('new_password')
         confirmation = request.form.get('confirmation')
+        if not password or not confirmation:
+            errors = {"new_password": "Password is required", "confirmation": "Confirmation is required"}
+            return render_template('reset_password.html', token=token, errors=errors)
         if password == confirmation:
             user = Users.query.filter_by(email=email).first()
             user.hash = generate_password_hash(password)
@@ -314,8 +322,9 @@ def reset_password(token):
             else:
                 return redirect(url_for('auth.login'))
         else:
-            flash('Passwords do not match.', 'danger')
-    return render_template('reset_password.html', token=token)
+            errors = {"confirmation": "Passwords do not match"}
+            return render_template('reset_password.html', token=token, errors=errors)
+    return render_template('reset_password.html', token=token, errors=errors)
 
 
 @auth.route('/upload_profile_pic', methods=['POST'])
@@ -331,9 +340,9 @@ def upload_profile_pic():
         flash('No selected file')
         return redirect(url_for('main.profile'))
     
-    if file and allowed_file(file.filename):
+    if file and allowed_pic_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(UPLOAD_FOLDER, filename))
+        file.save(os.path.join(UPLOAD_PICS_FOLDER, filename))
         current_user.profile_pic = filename
         db.session.commit()
         flash('Profile picture updated successfully')

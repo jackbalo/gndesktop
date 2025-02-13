@@ -1,19 +1,11 @@
-import pyotp
 from datetime import datetime
-from flask import redirect, render_template, url_for, flash
+from flask import redirect, render_template, url_for, flash, current_app
 from flask_login import current_user
-from flask_mail import Message
 from functools import wraps
-from encryption_app.models import Users, db, AuditLogs
+from encryption_app.models import db, AuditLogs
 
 
 
-import smtplib
-
-
-
-# Temporary OTP storage (use Redis or DB in production)
-otps = {}
 
 def apology(message, code=400):
     """Render message as an apology to user."""
@@ -79,9 +71,13 @@ def email_confirmed(f):
 
 #log users action
 def log(action):
-    user_log = AuditLogs(user_id=current_user.id, action=action, timestamp=datetime.now())
-    db.session.add(user_log)
-    db.session.commit
+    try:
+        user_log = AuditLogs(user_id=current_user.id, action=action, timestamp=datetime.now())
+        db.session.add(user_log)
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(f"Error logging action: {e}")
+        raise
 
 
 #convert to python date.

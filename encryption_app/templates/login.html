@@ -36,10 +36,16 @@
                         <div class="mb-3">
                             <label for="username" class="form-label">Email</label>
                             <input type="text" class="form-control" id="username" name="email" placeholder="Enter Email" autocomplete="off" autofocus>
+                            {% if errors.email %}
+                                <div class="text-danger">{{ errors.email }}</div>
+                            {% endif %}
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
+                            {% if errors.password %}
+                                <div class="text-danger">{{ errors.password }}</div>
+                            {% endif %}
                         </div>
                         <div class="mb-2 text-center gap-3">
                             <button type="submit" class="btn btn-success">Sign In <i class="fas fa-sign-in-alt ms-1"></i></button>
