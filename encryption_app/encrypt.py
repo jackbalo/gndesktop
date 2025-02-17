@@ -1,6 +1,5 @@
 import re
 import math
-from flask import current_app
 
 def start_prepare_text(text):
     # Define punctuation replacements
@@ -127,12 +126,10 @@ def encrypt_text(text, key):
         table = create_encryption_table(key)
         filled_table = fill_encryption_table(table, prepared_text)
         extracted_text, num_groups = extract_encoded_text(filled_table)
-        return extracted_text, num_groups  # Return both the encoded text and the count of word groups
+        return extracted_text  # Return only the encoded text
     except ValueError as e:
-        current_app.logger.error(f"Error during encryption: {e}")
         raise
     except Exception as e:
-        current_app.logger.error(f"Unexpected error during encryption: {e}")
         raise
 
 

@@ -1,6 +1,5 @@
 import os
 import re
-from flask import current_app
 
 def preprocess_text(text):
     text = re.sub(r'\s+', '', text)
@@ -45,7 +44,6 @@ def create_table(key, text):
         
         return table
     except Exception as e:
-        current_app.logger.error(f"Error creating decryption table: {e}")
         raise
 
 def fill_table(table):
@@ -121,7 +119,6 @@ def decrypt_text(text, key):
         
         return formatted_decrypted_text
     except ValueError as e:
-        current_app.logger.error(f"Error during decryption: {e}")
         raise
 
 

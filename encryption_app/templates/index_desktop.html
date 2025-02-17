@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Bootstrap CSS -->
+        <script src="encryption_app/static/bootstrap/js/bootstrap.min.js"></script>
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="encryption_app/static/bootstrap/css/bootstrap.min.css">
+        <title>GNCipher</title>
+    </head>
+</head>
+<body>
+    <div class="container my-5">
+        <!-- Personalized Greeting -->
+        <div class="alert alert-primary text-center">
+            <h2>Welcome to GNCipher!</h2>
+            <p>Ready to secure your communications?</p>
+        </div>
+
+        <!-- Historical Hero Section -->
+        <div class="card shadow border-0 mb-5">
+            <div class="card-header bg-navy text-light py-4">
+                <h1 class="display-4 text-center mb-3">
+                    <span class="ms-2 fw-bold">The PlayFair Cipher</span>
+                </h1>
+                <p class="lead text-center mb-0">Battle-Proven Encryption Since WW1</p>
+            </div>
+            <div class="card-body bg-dark-blue text-light">
+                <div class="row align-items-center">
+                    <div class="col-md-5 text-center">
+                        <img src="static/comms_badge.jpg" alt="WWI Communications" class="img-fluid rounded-3">
+                    </div>
+                    <div class="col-md-7 mt-4 mt-md-0">
+                        <p class="mb-4">
+                            Originally deployed by <strong>British Naval Intelligence</strong> during World War I, the Playfair Cipher secured critical battlefield communications through its unique digraph substitution system.
+                        </p>
+                        <div class="alert alert-navy">
+                            <i class="fas fa-medal me-2"></i>Key Historical Uses:
+                            <ul class="mt-2 mb-0">
+                                <li>Trench communication encryption</li>
+                                <li>Royal Navy dispatches</li>
+                                <li>Adopted by various armed forces</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cipher Mechanics & User Tips Section -->
+        <div class="card shadow border-0 mb-5">
+            <div class="card-header bg-navy text-light py-4">
+                <h2 class="h4 text-center mb-0">How It Works</h2>
+            </div>
+            <div class="card-body bg-light text-dark">
+                <p>Follow these steps to encrypt your messages:</p>
+                <ol>
+                    <li>Enter your plaintext message.</li>
+                    <li>Provide the encryption key (12 characters, letters only).</li>
+                    <li>The system generates encoded text in groups of 5.</li>
+                </ol>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Remember: Never share your encryption keys online!
+                </div>
+            </div>
+        </div>
+
+        <!-- Historical Timeline Section -->
+        <div class="card shadow border-0 mb-5">
+            <div class="card-header bg-navy text-light py-3">
+                <h2 class="h4 mb-0 text-center">
+                    <i class="fas fa-history me-2"></i>Playfair Cipher Evolution Timeline
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon bg-navy text-light">1854</div>
+                        <div class="timeline-content">
+                            <h4>Initial Invention</h4>
+                            <p>Charles Wheatstone develops the cipher for British diplomatic communications</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon bg-navy text-light">1914</div>
+                        <div class="timeline-content">
+                            <h4>WWI Deployment</h4>
+                            <p>Adopted by Royal Navy for ship-to-shore communications during blockades</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon bg-navy text-light">1943</div>
+                        <div class="timeline-content">
+                            <h4>Modern Usage</h4>
+                            <p>Modified version employed by various militias around the globe</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action Section -->
+        <div class="text-center" style="background-color: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 10px;">
+            <h3 class="h2 mb-4 text-light">Ready to Encode Your Messages?</h3>
+            <a href="#" onclick="startEncryption()" class="btn btn-military btn-lg px-5">
+                <i class="fas fa-ship me-2"></i>Start Encryption 
+            </a>
+            <p class="mt-3 text-light"><strong>Do not share</strong> cipher keys via web!</p>
+            <p class="mt-3 text-light"><strong>Keys are provided as per communication guidelines.</strong></p>
+        </div>
+    </div>
+
+    <script>
+        function startEncryption() {
+            // Your JavaScript to trigger the encryption page in the desktop app.
+            window.location.href = 'encryption_page.html'; // Example navigation
+        }
+    </script>
+</body>
+</html>

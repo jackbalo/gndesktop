@@ -76,7 +76,6 @@ def log(action):
         db.session.add(user_log)
         db.session.commit()
     except Exception as e:
-        current_app.logger.error(f"Error logging action: {e}")
         raise
 
 
