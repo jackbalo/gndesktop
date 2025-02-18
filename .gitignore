@@ -5,6 +5,8 @@ __pycache__/
 .run.py
 # C extensions
 *.so
+.idea/
+.DStore/
 
 # Distribution / packaging
 .Python
