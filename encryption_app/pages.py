@@ -56,11 +56,16 @@ class EncryptionPage(QWidget):
     def setup_ui(self):
         layout = QVBoxLayout()
         
-        self.text_label = QLabel("Text:")
+        self.upload_button = QPushButton("Upload Plaintext Document")
+        self.upload_button.clicked.connect(self.upload_file)
+        
+        self.text_label = QLabel("Plaintext Message:")
         self.text_input = QTextEdit()
+        self.text_input.setPlaceholderText("Copy and Paste PlainText Message in here or Upload Document above!!")
         
         self.key_label = QLabel("Key:")
         self.key_input = QLineEdit()
+        self.key_input.setPlaceholderText("Enter encryption key")
         
         self.encrypted_label = QLabel("Encrypted Text:")
         self.encrypted_output = QTextEdit()
@@ -69,26 +74,19 @@ class EncryptionPage(QWidget):
         self.encrypt_button = QPushButton("Encrypt")
         self.encrypt_button.clicked.connect(self.encrypt_text)
         
-        self.upload_button = QPushButton("Upload Document")
-        self.upload_button.clicked.connect(self.upload_file)
-        
         self.download_button = QPushButton("Download Encrypted Document")
         self.download_button.clicked.connect(self.download_file)
         
         self.go_to_decryption_button = QPushButton("Go to Decryption")
         self.go_to_decryption_button.clicked.connect(self.main_window.show_decryption_page)
         
+        layout.addWidget(self.upload_button)
         layout.addWidget(self.text_label)
         layout.addWidget(self.text_input, stretch=3)  # Make text input larger
         layout.addWidget(self.key_label)
         layout.addWidget(self.key_input, stretch=1)  # Make key input smaller
-        layout.addWidget(self.upload_button)
         layout.addWidget(self.encrypt_button)
-        '''layout.addWidget(self.encrypted_label)
-        layout.addWidget(self.encrypted_output)
-        layout.addWidget(self.download_button)
-        layout.addWidget(self.go_to_decryption_button)
-        '''
+        
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         container = QWidget()
@@ -119,7 +117,7 @@ class EncryptionPage(QWidget):
             if self.duplicate_file_path:
                 replace_section(self.duplicate_file_path, encrypted_text)
                 delete_file(self.duplicate_file_path, 600)
-            self.main_window.show_output_page("Encrypted Text", encrypted_text, self.duplicate_file_path)
+            self.main_window.show_output_page("Encrypted Message", encrypted_text, self.duplicate_file_path)
         except Exception as e:
             QMessageBox.critical(self, "Encryption Error", str(e), QMessageBox.Ok, QMessageBox.Ok)
     
@@ -144,11 +142,16 @@ class DecryptionPage(QWidget):
     def setup_ui(self):
         layout = QVBoxLayout()
         
+        self.upload_button = QPushButton("Upload Encrypted Document")
+        self.upload_button.clicked.connect(self.upload_file)
+        
         self.text_label = QLabel("Encrypted Text:")
         self.text_input = QTextEdit()
-        
+        self.text_input.setPlaceholderText("Copy and Paste Encrypted Message Text in here or Upload Document above!!")
+
         self.key_label = QLabel("Key:")
         self.key_input = QLineEdit()
+        self.key_input.setPlaceholderText("Enter decryption key")
         
         self.decrypted_label = QLabel("Decrypted Text:")
         self.decrypted_output = QTextEdit()
@@ -157,20 +160,17 @@ class DecryptionPage(QWidget):
         self.decrypt_button = QPushButton("Decrypt")
         self.decrypt_button.clicked.connect(self.decrypt_text)
         
-        self.upload_button = QPushButton("Upload Document")
-        self.upload_button.clicked.connect(self.upload_file)
-        
         self.download_button = QPushButton("Download Decrypted Document")
         self.download_button.clicked.connect(self.download_file)
         
         self.go_to_encryption_button = QPushButton("Go to Encryption")
         self.go_to_encryption_button.clicked.connect(self.main_window.show_encryption_page)
         
+        layout.addWidget(self.upload_button)
         layout.addWidget(self.text_label)
         layout.addWidget(self.text_input, stretch=3)  # Make text input larger
         layout.addWidget(self.key_label)
         layout.addWidget(self.key_input, stretch=1)  # Make key input smaller
-        layout.addWidget(self.upload_button)
         layout.addWidget(self.decrypt_button)
         '''layout.addWidget(self.decrypted_label)
         layout.addWidget(self.decrypted_output)
@@ -207,7 +207,7 @@ class DecryptionPage(QWidget):
             if self.duplicate_file_path:
                 replace_section(self.duplicate_file_path, decrypted_text)
                 delete_file(self.duplicate_file_path, 600)
-            self.main_window.show_output_page("Decrypted Text", decrypted_text, self.duplicate_file_path)
+            self.main_window.show_output_page("Decrypted Message", decrypted_text, self.duplicate_file_path)
         except Exception as e:
             QMessageBox.critical(self, "Decryption Error", str(e), QMessageBox.Ok, QMessageBox.Ok)
     

@@ -1,6 +1,6 @@
 # 🔐 Playfair Text Encryption App
 
-A Flask-based encryption and decryption web application utilizing a **12-column table-based cipher** for secure message encoding.
+A PySide6-based desktop application for encryption and decryption utilizing a **12-column table-based cipher** for secure message encoding.
 
 ---
 
@@ -8,8 +8,8 @@ A Flask-based encryption and decryption web application utilizing a **12-column 
 
 - **Encrypt Messages**: Secure text using a **12-letter key**.
 - **Decrypt Messages**: Retrieve original text using the same key.
-- **User-Friendly UI**: Clean web interface with **dark mode**.
-- **Flask Backend**: Handles encryption and decryption securely.
+- **User-Friendly UI**: Clean desktop interface with **dark mode**.
+- **Document Handling**: Upload and download encrypted/decrypted documents.
 
 ---
 
@@ -17,7 +17,7 @@ A Flask-based encryption and decryption web application utilizing a **12-column 
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/jackbalo/playfair.git
+git clone https://github.com/jackbalo/gndesktop.git
 cd playfair
 
 2️⃣ Install Dependencies
@@ -28,32 +28,26 @@ pip install -r requirements.txt
 
 3️⃣ Run the Application
 
-flask run
+python app.py
 
-The application will be available at:
-➡️ http://127.0.0.1:5000/
-
+The application will open as a desktop window.
 
 ---
 
 📂 Project Structure
 
-📁 playfair-cipher-app/
-│── 📄 app.py                # Main Flask application
-│── 📄 config.py             # Configuration settings
+📁 gndesktop/
+│── 📄 app.py                # Main application entry point
+│── 📄 main_window.py        # Main window setup and navigation
 │── 📂 encryption_app/
 │   │── 📄 __init__.py       # Package initialization
-│   │── 📄 routes.py         # Flask routes (handles encryption & decryption)
-│   │── 📄 decoding.py       # Decryption logic
-│   │── 📄 helpers.py        # Encryption utilities
-│── 📂 templates/            # HTML templates
-│   │── 📄 layout.html       # Base template
-│   │── 📄 index.html        # Home page
-│   │── 📄 encrypt.html      # Encryption page
-│   │── 📄 decrypt.html      # Decryption page
-│── 📂 static/               # Static assets (CSS & JS)
-│   │── 📄 styles.css        # Styling
-│   │── 📄 script.js         # Dark mode toggle
+│   │── 📄 pages.py          # UI pages for encryption, decryption, and results
+│   │── 📄 encrypt.py        # Encryption logic
+│   │── 📄 decrypt.py        # Decryption logic
+│   │── 📄 file_helpers.py   # File handling utilities
+│── 📂 static/               # Static assets (CSS & images)
+│   │── 📄 styles.qss        # Styling
+│   │── 📄 logo.png          # Application logo
 │── 📄 requirements.txt      # Required dependencies
 │── 📄 README.md             # Project documentation
 
@@ -64,14 +58,14 @@ The application will be available at:
 
 🔒 Encryption
 
-1️⃣ Enter your plaintext message.
+1️⃣ Enter your plaintext message or upload a document.
 2️⃣ Provide a 12-letter key (alphabets only).
 3️⃣ The app arranges text column-wise and extracts it row-wise.
-4️⃣ The encrypted text is grouped into sets of five characters.
+4️⃣ The encrypted text is displayed and can be downloaded.
 
 🔓 Decryption
 
-1️⃣ Enter the encrypted text.
+1️⃣ Enter the encrypted text or upload a document.
 2️⃣ Use the same key for decryption.
 3️⃣ The app reconstructs the table and extracts the original message.
 
@@ -80,47 +74,52 @@ The application will be available at:
 
 📜 Code Breakdown
 
-🔹 app.py (Flask Entry Point)
+🔹 app.py (Application Entry Point)
 
-Initializes the Flask app.
+Initializes the QApplication.
 
-Loads configurations.
-
-Registers the blueprint (routes.py).
-
-Ensures no-cache policy for responses.
+Creates and shows the main window.
 
 
-🔹 routes.py (Flask Routes)
+🔹 main_window.py (Main Window)
 
-Defines the index, encryption, and decryption routes.
+Sets up the main window and navigation.
 
-Processes form inputs.
+Handles menu and toolbar actions.
 
-Calls encrypt_text() and decrypt_text() functions.
-
-
-🔹 helpers.py (Encryption Utilities)
-
-prepare_text(): Formats text, replacing special characters.
-
-create_encryption_table(): Builds the table with key ranking.
-
-fill_encryption_table(): Organizes text into the 12-column format.
-
-extract_encoded_text(): Extracts the encrypted message in 5-character groups.
+Manages page transitions.
 
 
-🔹 decoding.py (Decryption Logic)
+🔹 pages.py (UI Pages)
 
-preprocess_text(): Formats text before processing.
+Defines the encryption, decryption, and result pages.
 
-generate_key_order(): Numbers the key alphabetically.
+Handles user inputs and displays results.
 
-create_table(): Reconstructs the 12-column table.
 
-extract_text(): Retrieves the original message.
+🔹 encrypt.py (Encryption Logic)
 
+encrypt_text(): Encrypts the plaintext using the provided key.
+
+
+🔹 decrypt.py (Decryption Logic)
+
+decrypt_text(): Decrypts the encrypted text using the provided key.
+
+
+🔹 file_helpers.py (File Handling Utilities)
+
+allowed_doc_file(): Checks if the file is a valid document.
+
+copy_section(): Copies text from a document.
+
+replace_section(): Replaces text in a document.
+
+create_document(): Creates a new document.
+
+duplicate_document(): Duplicates a document.
+
+delete_file(): Deletes a file after a specified delay.
 
 
 ---
@@ -153,31 +152,25 @@ HELLO WORLD
 
 🎨 User Interface
 
-🔹 index.html
-
-Home page with an overview of encryption and decryption.
-
-
-🔹 encrypt.html
+🔹 Encryption Page
 
 Form to enter plaintext and key.
 
-Displays encrypted text.
+Displays encrypted text and allows document download.
 
 
-🔹 decrypt.html
+🔹 Decryption Page
 
 Form to enter encrypted text and key.
 
-Displays decrypted text.
+Displays decrypted text and allows document download.
 
 
-🔹 layout.html
+🔹 Result Page
 
-Navigation bar for encryption/decryption.
+Displays the result of encryption or decryption.
 
-Dark mode toggle.
-
+Allows downloading the result as a document.
 
 
 ---
@@ -205,7 +198,5 @@ This project is licensed under the MIT License.
 
 ---
 
-🔥 Built with Flask | HTML | CSS | JavaScript
-
-This README integrates all components of your project cohesively, making it easy for others to understand, install, and use. Let me know if you need modifications! 🚀
+🔥 Built with PySide6 | Python🚀
 
