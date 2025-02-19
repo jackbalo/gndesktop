@@ -1,6 +1,7 @@
 import os
 from PySide6.QtWidgets import QMainWindow, QStackedWidget, QMenuBar, QFileDialog, QMessageBox, QToolBar, QLabel, QVBoxLayout, QHBoxLayout, QWidget
 from PySide6.QtGui import QIcon, QAction, QPixmap
+from PySide6.QtCore import Qt  # Add this import
 from encryption_app.pages_web_index import IndexPage  # New import for web index page
 from encryption_app.pages import EncryptionPage, DecryptionPage, ResultPage
 
@@ -8,8 +9,15 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setGeometry(200, 100, 800, 700)
-        self.setMinimumSize(800, 700)
-        self.setMaximumSize(1920, 1080)
+        self.setMinimumSize(800, 500)
+
+        
+        # Enable window resizing using restore, maximize, and minimize buttons
+        self.setWindowFlags(Qt.Window)
+        
+        # Set the window icon
+        icon_path = os.path.join(os.path.dirname(__file__), 'static', 'comms.ico')
+        self.setWindowIcon(QIcon(icon_path))
         
         self.central_widget = QStackedWidget()
         
@@ -33,14 +41,6 @@ class MainWindow(QMainWindow):
         self.setMenuBar(self.menu_bar)
         
         file_menu = self.menu_bar.addMenu("File")
-        
-        open_action = QAction("Open", self)
-        open_action.triggered.connect(self.open_file)
-        file_menu.addAction(open_action)
-        
-        save_action = QAction("Save", self)
-        save_action.triggered.connect(self.save_file)
-        file_menu.addAction(save_action)
         
         exit_action = QAction("Exit", self)
         exit_action.triggered.connect(self.close)
@@ -118,7 +118,7 @@ class MainWindow(QMainWindow):
         main_layout = QVBoxLayout()
         
         logo_label = QLabel()
-        logo_pixmap = QPixmap(os.path.join(os.path.dirname(__file__), 'static', 'logo.png'))
+        logo_pixmap = QPixmap(os.path.join(os.path.dirname(__file__), 'static', 'comms.png'))
         logo_label.setPixmap(logo_pixmap.scaled(50, 50))
         
         top_layout = QHBoxLayout()
