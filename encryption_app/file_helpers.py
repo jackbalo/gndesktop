@@ -6,7 +6,6 @@ import os
 import uuid
 import threading
 import shutil
-from flask import current_app
 
 UPLOAD_PICS_FOLDER = os.path.join(os.path.dirname(__file__), 'static/profile_pics')
 ALLOWED_PIC_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -15,6 +14,7 @@ def allowed_pic_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_PIC_EXTENSIONS
 
 UPLOAD_DOCS_FOLDER = os.path.join(os.path.dirname(__file__), 'static/Documents')
+os.makedirs(UPLOAD_DOCS_FOLDER, exist_ok=True)  # Ensure the directory exists
 ALLOWED_DOC_EXTENSIONS = {'docx'}
 
 def allowed_doc_file(filename):
@@ -25,26 +25,24 @@ def create_document(content):
         filename = f"{uuid.uuid4()}.docx"
         file_path = os.path.join(UPLOAD_DOCS_FOLDER, filename)
         
-        # Ensure the directory exists
-        os.makedirs(UPLOAD_DOCS_FOLDER, exist_ok=True)
-        
         doc = Document()
         doc.add_paragraph(content)
         doc.save(file_path)
         return filename
     except Exception as e:
-        current_app.logger.error(f"Error creating document: {e}")
+        print(f"Error creating document: {e}")
         raise
 
 def duplicate_document(file_path):
     try:
+        os.makedirs(UPLOAD_DOCS_FOLDER, exist_ok=True)  # Ensure directory exists
         filename = os.path.basename(file_path)
         duplicate_filename = f"{os.path.splitext(filename)[0]}_encrypt{os.path.splitext(filename)[1]}"
         duplicate_file_path = os.path.join(UPLOAD_DOCS_FOLDER, duplicate_filename)
-        shutil.copy(file_path, duplicate_file_path)
+        shutil.copy2(file_path, duplicate_file_path)  # Using copy2 to preserve metadata
         return duplicate_file_path
     except Exception as e:
-        current_app.logger.error(f"Error duplicating document: {e}")
+        print(f"Error duplicating document: {e}")
         raise
 
 def normalize_text(text):
@@ -60,26 +58,29 @@ def normalize_text(text):
 
     return text
 
+END_MARKERS = ['//', '///', '////', '/////','//////', '///////']
 
 def copy_section(file_path):
     try:
         doc = Document(file_path)
         
-        # initialize flag to indicate when section starts
         section_found = False
         section_text = ""
-
+        
         # predefined list of keywords
-        keywords = ["REST'D", "RESTRICTED", "SEC", "SECRET", "TOP SECRET", "TOPSECRET", "TOPSEC", "CONF", "CONFIDENTIAL", "GR", "GR:"]
+        keywords = ["REST'D", "RESTD", "RESTRICTED", "SEC", "SECRET", "TOP SECRET", "TOPSECRET", "TOPSEC", "CONF", "CONFIDENTIAL", "GR", "GR:"]
         normalized_keywords = [normalize_text(keyword) for keyword in keywords]
 
         # iterate through paragraphs and tables
         for para in doc.paragraphs:
             para_text = normalize_text(para.text)
             if section_found:
+                # Check for any end marker
+                for marker in END_MARKERS:
+                    if marker in para_text:
+                        section_text += para_text.split(marker)[0].strip() + "\n"
+                        return section_text.strip()  # Exit immediately when end marker found
                 section_text += para_text + "\n"
-                if "//" in para_text:
-                    break
             elif any(para_text.startswith(keyword) for keyword in normalized_keywords):
                 section_found = True
                 section_text += para_text + "\n"
@@ -88,9 +89,12 @@ def copy_section(file_path):
             for row in table.rows:
                 row_text = ",".join(normalize_text(cell.text) for cell in row.cells)
                 if section_found:
+                    # Check for any end marker
+                    for marker in END_MARKERS:
+                        if marker in row_text:
+                            section_text += row_text.split(marker)[0].strip() + "\n"
+                            return section_text.strip()  # Exit immediately when end marker found
                     section_text += row_text + "\n"
-                    if "//" in row_text:
-                        break
                 elif any(normalize_text(cell.text).startswith(keyword) for keyword in normalized_keywords):
                     section_found = True
                     section_text += row_text + "\n"
@@ -110,7 +114,7 @@ def copy_section(file_path):
         
         return "\n".join(lines).strip()
     except Exception as e:
-        current_app.logger.error(f"Error copying section: {e}")
+        print(f"Error copying section: {e}")
         raise
 
 def replace_section(file_path, edited_text):
@@ -121,7 +125,7 @@ def replace_section(file_path, edited_text):
         section_found = False
 
         # predefined list of keywords
-        keywords = ["REST'D", "RESTRICTED", "SEC", "SECRET", "TOP SECRET", "TOPSECRET", "TOPSEC", "CONF", "CONFIDENTIAL", "GR", "GR:"]  # Keywords to identify the section
+        keywords = ["REST'D", "RESTRICTED", "SEC", "SECRET", "TOP SECRET", "TOPSECRET", "TOPSEC", "CONF", "RESTD", "CONFIDENTIAL", "GR", "GR:"]  # Keywords to identify the section
         normalized_keywords = [normalize_text(keyword) for keyword in keywords]
 
         # iterate through paragraphs and tables
@@ -159,7 +163,7 @@ def replace_section(file_path, edited_text):
 
         doc.save(file_path)
     except Exception as e:
-        current_app.logger.error(f"Error replacing section: {e}")
+        print(f"Error replacing section: {e}")
         raise
 
 def delete_file(file_path, delay):
@@ -168,6 +172,6 @@ def delete_file(file_path, delay):
             if os.path.exists(file_path):
                 os.remove(file_path)
         except Exception as e:
-            current_app.logger.error(f"Error deleting file: {e}")
+            print(f"Error deleting file: {e}")
     timer = threading.Timer(delay, delete)
     timer.start()

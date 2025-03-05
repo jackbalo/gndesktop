@@ -2,8 +2,13 @@ import os
 import re
 
 def preprocess_text(text):
-    text = re.sub(r'\s+', '', text)
-    return text.upper()
+    # First remove any whitespace and convert to uppercase
+    text = re.sub(r'\s+', '', text.upper())
+    
+    # Remove the date-time stamp pattern that appears at the end
+    text = re.sub(r'\d{6}Z/[A-Z]{3}/\d{2}$', '', text)
+    
+    return text
 
 def generate_key_order(key):
     key = key.upper()
@@ -15,7 +20,6 @@ def generate_key_order(key):
 
 def create_table(key, text):
     try:
-        text = preprocess_text(text)
         key_order = generate_key_order(key)
         
         num_cols = len(key)
@@ -121,9 +125,34 @@ def decrypt_text(text, key):
     except ValueError as e:
         raise
 
-
-
 '''
+text = "SQRUA     CIG1O     NGA0V     TFOUI     RLAVB RNO0F     RITON     MOTIB     TUIRC     KNHBM ICU71     OUBEQ     X2A0E     TBBAN     INIYX TTIBE     DEC2K     EGORI     TORH0     SRLOU EIFOR     ANN3N     INMMO     ERRQL     GXNXN FCQEE     PNUEX     DREQX     2N1TO     RLCAA FTPXA     HQLXO     EELNB     EEOFA     XF1SY NBEMX     DXGYK     UTDLE     SNXBI     OUN1E 0OFAI     KTLMI     H2NEU     IBXAT     BET3F ONAR2     AFSLO 271310z/SEP /10"
+key = "blackcountry"
+
+preprocessed_text = preprocess_text(text)
+print(preprocessed_text + "\n")	
+table = create_table(key, preprocessed_text)
+print(table)
+print("\n")
+extracted_text = fill_table(table)
+print(extracted_text)
+print("\n")
+symbol_replaced_text = replace_symbols(extracted_text)
+print(symbol_replaced_text)
+print("\n")
+decrypted_text = add_spaces(symbol_replaced_text)
+print(decrypted_text)
+print("\n")
+formatted_decrypted_text = format_text(decrypted_text)
+print(formatted_decrypted_text)
+print("\n")
+
+final =  decrypt_text(text, key)
+print(final)
+
+
+
+
 file = "/Users/blackbalo/downloads/balo.docx"
 key = "blackcountry"
 

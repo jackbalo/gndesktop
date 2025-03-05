@@ -1,6 +1,15 @@
 import re
 import math
 
+def preprocess_text(text):
+    # First remove any whitespace and convert to uppercase
+    text = re.sub(r'\s+', '', text.upper())
+    
+    # Remove the date-time stamp pattern that appears at the end
+    text = re.sub(r'\d{6}Z/[A-Z]{3}/\d{2}$', '', text)
+    
+    return text
+
 def start_prepare_text(text):
     # Define punctuation replacements
     replacements = {
@@ -122,7 +131,8 @@ def extract_encoded_text(table):
 
 def encrypt_text(text, key):
     try:
-        prepared_text = prepare_text(text)
+        processed_text = preprocess_text(text)
+        prepared_text = prepare_text(processed_text)
         table = create_encryption_table(key)
         filled_table = fill_encryption_table(table, prepared_text)
         extracted_text, num_groups = extract_encoded_text(filled_table)
